@@ -1,3 +1,6 @@
+"""Deeply merge configuration dictionaries."""
+
+
 def merge(source, destination):
     """Merge source dict into destination dict recursively."""
     for key, value in source.items():

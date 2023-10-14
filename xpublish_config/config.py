@@ -1,15 +1,14 @@
+"""Dynamically generate Xpublish configs based on active plugins."""
 import importlib
-
-from typing import Dict, List, Optional, Union
 from pathlib import Path
+from typing import Dict, List, Optional, Union
 
+from pydantic import BaseModel, Field, create_model
 from pydantic_settings import (
     BaseSettings,
-    SettingsConfigDict,
     PydanticBaseSettingsSource,
+    SettingsConfigDict,
 )
-from pydantic import create_model, BaseModel, Field
-
 from xpublish.plugins import find_default_plugins
 
 from xpublish_config.load_from_file import load_from_file
@@ -17,8 +16,11 @@ from xpublish_config.merge_configs import merge
 
 
 class XpublishPluginSettings(BaseSettings):
-    """Settings class for managing what plugins are loaded,
-    before loading and validating plugin configs."""
+    """Settings class for managing what plugins are loaded.
+
+    Allows controlling which plugins are loaded or not before
+    they are used for validating the full configuration.
+    """
 
     disabled_plugins: List[str] = Field(
         default_factory=list,
@@ -38,7 +40,7 @@ class XpublishPluginSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="xpublish_", extra="ignore")
 
     @classmethod
-    def settings_customise_sources(
+    def settings_customise_sources(  # noqa:PLR0913
         cls,
         settings_cls: type[BaseSettings],
         init_settings: PydanticBaseSettingsSource,
@@ -46,23 +48,56 @@ class XpublishPluginSettings(BaseSettings):
         dotenv_settings: PydanticBaseSettingsSource,
         file_secret_settings: PydanticBaseSettingsSource,
     ) -> tuple[PydanticBaseSettingsSource, ...]:
-        """Make environment variables, dotenv, or file secret setting sources
-        override directly passed in or config file sources"""
+        """Configure order of priority.
+
+        Environment variables should be most important,
+        then dotenv, followed by secret files, and finally
+        the directly passed in configuration.
+        """
         return env_settings, dotenv_settings, file_secret_settings, init_settings
 
 
 class XpublishBaseSettings(XpublishPluginSettings):
+    """Disable allowing extra arguments for downstream classes."""
+
     model_config = SettingsConfigDict(env_prefix="xpublish_", extra="forbid")
 
 
 class RestSettings(BaseModel):
+    """Arguments to pass to xpublish.Rest."""
+
     # datasets: dict = Field(default_factory=dict)
     # routers:
     cache_kws: dict = Field(default_factory=dict)
     app_kws: dict = Field(default_factory=dict)
 
 
+class XpublishRestSettings(XpublishBaseSettings):
+    """Configure xpublish.Rest."""
+
+    rest: RestSettings = Field(default_factory=RestSettings)
+
+    def rest_kwargs(self) -> dict:
+        """Keyword arguments for Xpublish.Rest()."""
+        kwargs = self.rest.model_dump()
+        try:
+            kwargs["plugins"] = self.plugins.__dict__
+        except AttributeError:
+            pass
+        return kwargs
+
+    def rest(self):
+        """Instantiate xpublish.Rest."""
+        from xpublish import Rest
+
+        kwargs = self.rest_kwargs()
+
+        return Rest(**kwargs)
+
+
 class ServeSettings(BaseModel):
+    """Arguments to pass to uvicorn.run or similar servers."""
+
     host: str = Field(default="0.0.0.0")
     port: int = Field(default=9000)
     log_level: str = Field(default="info")
@@ -70,21 +105,25 @@ class ServeSettings(BaseModel):
     reload: bool = Field(default=False)
 
 
-class XpublishServingSettings(XpublishBaseSettings):
-    rest: RestSettings = Field(default_factory=RestSettings)
+class XpublishServingSettings(XpublishRestSettings):
+    """Configure uvicorn.run and other servers for Xpublish."""
+
     serve: ServeSettings = Field(default_factory=ServeSettings)
 
-    def rest_kwargs(self):
-        kwargs = self.rest.dict()
-        try:
-            kwargs["plugins"] = self.plugins.__dict__
-        except AttributeError:
-            pass
+    def serve_kwargs(self) -> dict:
+        """Keyword arguments for uvicorn.run."""
+        kwargs = self.serve.model_dump()
+
         return kwargs
+
+    unicorn_run_kwargs = serve_kwargs
 
 
 class XpublishConfigManager:
+    """Generate Xpublish settings classes and example configurations."""
+
     def __init__(self, settings_class: Optional[XpublishBaseSettings] = None) -> None:
+        """Set a default settings class to build dynamic settings on top of."""
         if not settings_class:
             self.settings_class = XpublishServingSettings
         else:
@@ -95,8 +134,10 @@ class XpublishConfigManager:
         initial_config: Optional[dict] = None,
         from_file: Optional[Union[str, Path]] = None,
     ) -> dict:
-        """Merge a directly passed in config into the file config,
-        so the config values coming from the file take precedence."""
+        """Merge a directly passed in config into the file config.
+
+        The config values from the file should take precedence.
+        """
         config = initial_config or {}
 
         if from_file:
@@ -110,8 +151,12 @@ class XpublishConfigManager:
         initial_config: Optional[dict] = None,
         from_file: Optional[Union[str, Path]] = None,
     ):
-        """Using the settings class, the included and excluded plugins
-        return a settings class with plugins
+        """Creates a settings class based on loaded plugins.
+
+        Uses the underlying default settings class, and
+        the registered and disabled plugins from the
+        directly loaded, file, and environment variable configs
+        to create a settings class that can load an validate plugins.
         """
         config = self.merged_config(initial_config, from_file)
 
@@ -143,10 +188,7 @@ class XpublishConfigManager:
 
         PluginModel = create_model(
             "PluginModel",
-            **{
-                key: (value, Field(default_factory=value))
-                for key, value in plugins.items()
-            },
+            **{key: (value, Field(default_factory=value)) for key, value in plugins.items()},
         )
 
         class XpublishDynamicSettings(self.settings_class):
@@ -159,8 +201,7 @@ class XpublishConfigManager:
         initial_config: Optional[dict] = None,
         from_file: Optional[Union[str, Path]] = None,
     ):
-        """Return a fully configured settings class"""
-
+        """Return a fully configured settings class."""
         settings_class = self.build_dynamic_settings(initial_config, from_file)
         config = self.merged_config(initial_config, from_file)
 

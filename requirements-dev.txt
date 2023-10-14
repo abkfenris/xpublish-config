@@ -1,3 +1,17 @@
+black
+check-manifest
+httpx
+interrogate
+jupyter
+myst-parser
+nbsphinx
+pre-commit
 pytest
+pytest-cov
+pytest-xdist
+setuptools_scm
+sphinx
 syrupy  # snapshot testing
+twine
+wheel
 xpublish-intake-provider

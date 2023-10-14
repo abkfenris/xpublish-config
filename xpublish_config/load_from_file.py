@@ -1,8 +1,10 @@
-from typing import Union
+"""Load a configuration from YAML, TOML, or JSON."""
 from pathlib import Path
+from typing import Union
 
 
 def load_from_file(file_path: Union[Path, str]) -> dict:
+    """Load a configuration from YAML, TOML, or JSON."""
     if isinstance(file_path, str):
         file_path = Path(file_path)
 

@@ -101,7 +101,7 @@ def test_load_settings_from_dict(snapshot):
             },
         },
     }
-    
+
     settings = XpublishConfigManager().parse(initial_config=dict_config)
 
     assert settings.disabled_plugins == []
@@ -123,19 +123,6 @@ def test_load_settings_from_dict(snapshot):
 
 
 def test_load_merge_configs(snapshot):
-    dict_config = {
-        "register_plugins": {
-            "dbofs_datasets": "xpublish_intake_provider:IntakeDatasetProviderPlugin",
-        },
-        "plugins": {
-            "opendap": {"dataset_router_prefix": "/dap"},  # should be overriden by file
-            "dbofs_datasets": {
-                "uri": "https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/dbofs.yaml",
-            },
-        },
-    }
-    
-
     settings = XpublishConfigManager().parse(from_file="./tests/test_config.json")
 
     assert settings.disabled_plugins == ["cf_edr"]

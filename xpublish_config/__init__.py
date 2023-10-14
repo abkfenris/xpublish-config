@@ -1,3 +1,4 @@
+"""Programmatic and overridable configuration loading for Xpublish."""
 from .config import XpublishConfigManager
 
 __all__ = ["XpublishConfigManager"]

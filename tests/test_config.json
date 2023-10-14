@@ -10,7 +10,7 @@
       "dataset_router_prefix": "/opendap"
     },
     "test_local": {
-      "invalid_config": true 
+      "invalid_config": true
     },
     "gfs_datasets": {
       "uri": "https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gfs-1-4deg.yaml"

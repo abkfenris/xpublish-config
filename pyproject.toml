@@ -45,3 +45,46 @@ dependencies = { file = ["requirements.txt"] }
 
 [tool.setuptools_scm]
 write_to = "xpublish_config/_version.py"
+
+[tool.black]
+line-length = 100
+
+[tool.ruff]
+select = [
+    "A",   # flake8-builtins
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "D",   # pydocstyle
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+    "PL",  # pylint
+    "T20", # flake8-print
+    "UP",  # pyupgrade
+    "W",   # pycodestyle warnings
+]
+line-length = 100
+
+[tool.ruff.per-file-ignores]
+"docs/source/conf.py" = ["E402", "D100", "A001"]
+"tests/*.py" = ["PLR2004", "D103", "D100", "D101"]
+
+[tool.ruff.pydocstyle]
+# Use Google-style docstrings.
+convention = "google"
+
+[tool.check-manifest]
+ignore = ["xpublish_config/_version.py"]
+
+[tool.interrogate]
+ignore-init-method = true
+ignore-init-module = false
+ignore-magic = false
+ignore-semiprivate = false
+ignore-private = false
+ignore-module = false
+fail-under = 95
+exclude = ["setup.py", "docs", "tests"]
+verbose = 1
+quiet = false
+color = true
