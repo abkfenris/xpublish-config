@@ -1,3 +1,2 @@
-xpublish
-goodconf
-pydantic<2 # until goodconf supports it
+pydantic>=2
+xpublish>0.3.0

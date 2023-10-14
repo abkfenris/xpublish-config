@@ -1,0 +1,14 @@
+disabled_plugins = ["cf_edr"]
+
+[register_plugins]
+test_local = "a_local_plugin:TestLocalPlugin"
+gfs_datasets = "xpublish_intake_provider:IntakeDatasetProviderPlugin"
+
+[plugins.opendap]
+dataset_router_prefix = "/opendap"
+
+[plugins.test_local]
+invalid_config = true # doesn't error but gets ignored
+
+[plugins.gfs_datasets]
+uri = "https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gfs-1-4deg.yaml"

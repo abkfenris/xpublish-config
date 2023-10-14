@@ -1,0 +1,23 @@
+# serializer version: 1
+# name: test_load_yaml
+  dict({
+    'disabled_plugins': list([
+      'cf_edr',
+    ]),
+    'plugins': dict({
+      'gfs_datasets': dict({
+        'uri': 'https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gfs-1-4deg.yaml',
+      }),
+      'opendap': dict({
+        'dataset_router_prefix': '/opendap',
+      }),
+      'test_local': dict({
+        'invalid_config': True,
+      }),
+    }),
+    'register_plugins': dict({
+      'gfs_datasets': 'xpublish_intake_provider:IntakeDatasetProviderPlugin',
+      'test_local': 'a_local_plugin:TestLocalPlugin',
+    }),
+  })
+# ---

@@ -1,35 +1,44 @@
 [build-system]
-requires = ["setuptools>=61", "wheel", "setuptools_scm[toml]>=3.4"]
 build-backend = "setuptools.build_meta"
-
-[project]
-name = "xpublish_config"
-description = ""
-readme = "README.md"
-requires-python = ">=3.7"
-keywords = []
-license = { file = "LICENSE.txt" }
-
-classifiers = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Science/Research",
-    "Operating System :: OS Independent",
-    "License :: OSI Approved :: BSD License",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Topic :: Scientific/Engineering",
+requires = [
+  "setuptools>=61",
+  "setuptools_scm[toml]>=3.4",
+  "wheel",
 ]
 
-dynamic = ["version", "dependencies"]
-
-# From Goodconf https://github.com/lincolnloop/goodconf/blob/main/pyproject.toml
+[project]
+name = "xpublish-config"
+description = ""
+readme = "README.md"
+keywords = [
+]
+license = { file = "LICENSE.txt" }
+requires-python = ">=3.7"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: BSD License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: Scientific/Engineering",
+]
+dynamic = [
+  "dependencies",
+  "version",
+]
 [project.optional-dependencies]
-yaml = ["ruamel.yaml>=0.17.0"]
-toml = ["tomlkit>=0.11.6"]
+toml = [
+  "tomlkit>=0.11.6",
+]
+yaml = [
+  "ruamel.yaml>=0.17",
+]
 
 [tool.setuptools.dynamic]
 dependencies = { file = ["requirements.txt"] }

@@ -1,3 +1,11 @@
-tests/__pycache__
+*-output.ipynb
+*.egg-info
+.coverage
+.ipynb_checkpoints/
+.mypy_cache/
+.pytest_cache/
+.vscode/
+__pycache__/
+build/
+dist/
 xpublish_config/_version.py
-xpublish_config.egg-info
