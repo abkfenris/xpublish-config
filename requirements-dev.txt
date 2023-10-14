@@ -1,0 +1,3 @@
+pytest
+syrupy  # snapshot testing
+xpublish-intake-provider
