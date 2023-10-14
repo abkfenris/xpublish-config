@@ -1,2 +1,3 @@
 pydantic>=2
+pydantic-settings
 xpublish>0.3.0
