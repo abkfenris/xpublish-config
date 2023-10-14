@@ -9,9 +9,11 @@ pre-commit
 pytest
 pytest-cov
 pytest-xdist
+ruamel.yaml
 setuptools_scm
 sphinx
 syrupy  # snapshot testing
+tomlkit
 twine
 wheel
 xpublish-intake-provider
