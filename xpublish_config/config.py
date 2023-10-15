@@ -86,7 +86,7 @@ class XpublishRestSettings(XpublishBaseSettings):
             pass
         return kwargs
 
-    def rest(self):
+    def to_rest(self):
         """Instantiate xpublish.Rest."""
         from xpublish import Rest
 
@@ -142,7 +142,7 @@ class XpublishConfigManager:
 
         if from_file:
             file_config = load_from_file(from_file)
-            config = merge(config, file_config)
+            config = merge(file_config, config)
 
         return config
 

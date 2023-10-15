@@ -71,6 +71,79 @@
     }),
   })
 # ---
+# name: test_load_merge_configs
+  dict({
+    'disabled_plugins': list([
+      'cf_edr',
+    ]),
+    'plugins': dict({
+      'dataset_info': dict({
+        'dataset_router_prefix': '',
+        'dataset_router_tags': list([
+          'dataset_info',
+        ]),
+        'name': 'dataset_info',
+      }),
+      'gfs_datasets': dict({
+        'name': 'intake-dataset-provider',
+        'uri': 'https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gfs-1-4deg.yaml',
+      }),
+      'gomofs_datasets': dict({
+        'name': 'intake-dataset-provider',
+        'uri': 'https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gomofs-2ds.yaml',
+      }),
+      'module_version': dict({
+        'app_router_prefix': '',
+        'app_router_tags': list([
+          'module_version',
+        ]),
+        'name': 'module_version',
+      }),
+      'opendap': dict({
+        'dataset_router_prefix': '/opendap',
+        'dataset_router_tags': list([
+          'opendap',
+        ]),
+        'name': 'opendap',
+      }),
+      'plugin_info': dict({
+        'app_router_prefix': '',
+        'app_router_tags': list([
+          'plugin_info',
+        ]),
+        'name': 'plugin_info',
+      }),
+      'test_local': dict({
+        'name': 'local_test',
+      }),
+      'zarr': dict({
+        'dataset_router_prefix': '/zarr',
+        'dataset_router_tags': list([
+          'zarr',
+        ]),
+        'name': 'zarr',
+      }),
+    }),
+    'register_plugins': dict({
+      'gfs_datasets': 'xpublish_intake_provider:IntakeDatasetProviderPlugin',
+      'gomofs_datasets': 'xpublish_intake_provider:IntakeDatasetProviderPlugin',
+      'test_local': 'a_local_plugin:TestLocalPlugin',
+    }),
+    'rest': dict({
+      'app_kws': dict({
+      }),
+      'cache_kws': dict({
+      }),
+    }),
+    'serve': dict({
+      'debug': False,
+      'host': '0.0.0.0',
+      'log_level': 'info',
+      'port': 9000,
+      'reload': False,
+    }),
+  })
+# ---
 # name: test_load_settings_from_dict
   dict({
     'disabled_plugins': list([

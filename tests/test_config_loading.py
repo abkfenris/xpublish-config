@@ -123,14 +123,31 @@ def test_load_settings_from_dict(snapshot):
 
 
 def test_load_merge_configs(snapshot):
-    settings = XpublishConfigManager().parse(from_file="./tests/test_config.json")
+    dict_config = {
+        "register_plugins": {
+            "gomofs_datasets": "xpublish_intake_provider:IntakeDatasetProviderPlugin",
+        },
+        "plugins": {
+            "opendap": {"dataset_router_prefix": "/dap"},
+            "gomofs_datasets": {
+                "uri": "https://raw.githubusercontent.com/axiom-data-science/mc-goods/main/mc_goods/gomofs-2ds.yaml",
+            },
+        },
+    }
+
+    settings = XpublishConfigManager().parse(
+        initial_config=dict_config,
+        from_file="./tests/test_config.json",
+    )
 
     assert settings.disabled_plugins == ["cf_edr"]
     assert settings.register_plugins == {
         "test_local": "a_local_plugin:TestLocalPlugin",
         "gfs_datasets": "xpublish_intake_provider:IntakeDatasetProviderPlugin",
-        "dbofs_datasets": "xpublish_intake_provider:IntakeDatasetProviderPlugin",
+        "gomofs_datasets": "xpublish_intake_provider:IntakeDatasetProviderPlugin",
     }
+
+    assert settings.plugins.opendap.dataset_router_prefix == "/opendap"
 
     assert settings.rest.cache_kws == {}
     assert settings.rest.app_kws == {}
