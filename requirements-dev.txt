@@ -16,4 +16,6 @@ syrupy  # snapshot testing
 tomlkit
 twine
 wheel
+xpublish-edr
 xpublish-intake-provider
+xpublish-opendap
